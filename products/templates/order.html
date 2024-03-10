@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% if success %}
+
+        {% url 'home' as home %}
+        <p><strong>Succeed !</strong></p>
+
+        <p>Go back to <a href="{% url 'home' %}">homepage</a></p>
+
+    {% elif denied %}
+
+        <p><strong>Your order exceeded item stock !</strong></p>
+
+    {% else %}
+
+        <div class="container product">
+            <div class="left-column">
+                <img src="{{ detail.pic_link }}" alt="">
+            </div>
+            <div class="right-column">
+                <!-- Product Description -->
+                <div class="product-description">
+                  <span>{{ detail.category }}</span><span style="float: right">{{ detail.date }}</span>
+                  <h1>{{ detail.name }}</h1>
+                  <p>{{ detail.description }}</p>
+                </div>
+
+                <p><strong>Seller:</strong> <a href="{{ detail.user_url }}">{{ detail.seller }}</a></p> <!-- author detail link not yet defined -->
+                <p><strong>Items left:</strong> {{ detail.quantity }}</p>
+                <div class="product-price">
+                  <span>{{ detail.price }}$</span>
+                </div>
+                <form method="post">
+                  {% csrf_token %}
+                  {{ form.as_p }}
+                  <button type="submit order" class="btn">Order!</button>
+                </form>
+            </div>
+        </div>
+
+
+    {% endif %}
+
+{% endblock %}

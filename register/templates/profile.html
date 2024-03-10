@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+
+{% block styles %}
+<style>
+.jumbotron{
+    text-align: center;
+    background-color: #0f0f0f;
+}
+
+
+</style>
+{% endblock %}
+
+{% block jumbotron %}
+    <div class="jumbotron">
+      <h2 style="color: white">Hi {{user.username}}</h2>
+          <img src="{{ profile_pic.profile_pic }}" style="max-height: 250px; max-width: 500px; min-height: 150px">
+          <div>
+             <a href="{{ profile_pic.upload_url }}" class="btn" role="button"><strong>upload/update profile photo</strong></a>
+          </div>
+    </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3>Purchase Record</h3>
+                    <hr>
+                    <ul class=list-group>
+                        {% for record in order_record %}
+                        {% if record.trade_result == "Succeed!" %}
+                            <li class="list-group-item justify-content-between">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <img src="{{ record.product_pic_link }}" width="150px" height="100px">
+                                    </div>
+                                    <div class="col-md-3 no-float">
+                                        <h3><strong>{{record.p_name}}</strong></h3>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <p><strong>seller: </strong>{{record.productseller}}</p>
+                                        <p><strong>status: </strong>{{record.trade_result}}</p>
+                                        <a href="{{ record.comment_url }}" class="btn" role="button"><strong>comment on the seller!</strong></a>
+                                    </div>
+                                </div>
+                            </li>
+                        {% else %}
+                            <li class="list-group-item justify-content-between">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <img src="{{ record.product_pic_link }}" width="150px" height="100px">
+                                    </div>
+                                    <div class="col-md-3 no-float">
+                                        <h3><strong>{{record.p_name}}</strong></h3>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <p><strong>seller: </strong>{{record.productseller}}</p>
+                                        <p><strong>status: </strong>{{record.trade_result}}</p>
+                                    </div>
+                                </div>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                    </ul>
+                </div><!-- /col-sm-12 -->
+            </div><!-- /row -->
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3>Received Orders</h3>
+                    <hr>
+                    {% for record in sell_record %}
+                        <ul class=list-group>
+                        {% if record.trade_result == 1 %}
+                            <li class="list-group-item justify-content-between list-group-item-success">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <img src="{{ record.product_pic_link }}" width="150px" height="100px">
+                                    </div>
+                                    <div class="col-md-3 no-float">
+                                        <h3><strong>{{record.p_name}}</strong></h3>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <p><strong>buyer: </strong>{{record.buyerid}}</p>
+                                        <p>ordered {{record.date_ago}} days ago
+                                        <p><strong>Status: Confirmed</strong></p>
+                                        <span class="badge badge-default badge-pill">1</span>
+                                    </div>
+                                </div>
+                            </li>
+                        {% elif record.trade_result == 2 %}
+                            <li class="list-group-item justify-content-between list-group-item-danger">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <img src="{{ record.product_pic_link }}" width="150px" height="100px">
+                                    </div>
+                                    <div class="col-md-3 no-float">
+                                        <h3><strong>{{record.p_name}}</strong></h3>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <p><strong>buyer: </strong>{{record.buyerid}}</p>
+                                        <p>ordered {{record.date_ago}} days ago
+                                        <p><strong>Status: Declined</strong></p>
+                                        <span class="badge badge-default badge-pill">1</span>
+                                    </div>
+                                </div>
+                            </li>
+                        {% else %}
+                            <li class="list-group-item justify-content-between list-group-item-info">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <img src="{{ record.product_pic_link }}" width="150px" height="100px">
+                                    </div>
+                                    <div class="col-md-3 no-float">
+                                        <h3><strong>{{record.p_name}}</strong></h3>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <p><strong>buyer: </strong>{{record.buyerid}}</p>
+                                        <p>ordered {{record.date_ago}} days ago
+                                        <p><a href="{{ record.url }}"><strong>confirm</strong></a></p>
+                                        <span class="badge badge-default badge-pill">1</span>
+                                    </div>
+                                </div>
+                            </li>
+                        {% endif %}
+                        </ul>
+                    {% endfor %}
+                </div><!-- /col-sm-12 -->
+            </div><!-- /row -->
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3>All Selling Products</h3>
+                    <hr>
+                    <ul class=list-group>
+                        {% for record in product_list %}
+
+                            <li class="list-group-item justify-content-between">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <img src="{{ record.product_pic_link }}" width="150px" height="100px">
+                                    </div>
+                                    <div class="col-md-3 no-float">
+                                        <h3><strong>{{record.p_name}}</strong></h3>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <p><strong>items left: </strong>{{record.p_quantity}}</p>
+                                        <a href="{{ record.update_url }}" class="btn" role="button"><strong>update quantity !</strong></a>
+                                    </div>
+                                </div>
+                            </li>
+
+                    {% endfor %}
+                    </ul>
+                </div><!-- /col-sm-12 -->
+            </div><!-- /row -->
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3>Comments</h3>
+                    <hr>
+                </div><!-- /col-sm-12 -->
+            </div><!-- /row -->
+
+            {% for comment in comment_list %}
+
+            <div class="row">
+                <div class="col-sm-1">
+                    <div class="thumbnail">
+                        <img class="img-responsive user-photo" src="{{ comment.profile_pic }}">
+                    </div><!-- /thumbnail -->
+                </div><!-- /col-sm-1 -->
+
+                <div class="col-sm-8">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <strong>{{ comment.FeedbackUser }}</strong> <span class="text-muted">commented {{ comment.date_ago }} days ago &#9658; {{ comment.p_name }}</span>
+                        </div>
+                        <div class="panel-body">
+                            {{ comment.f_content }}
+                        </div><!-- /panel-body -->
+                        <div class="panel-footer">
+                            <div class="row">
+                                <div class="col-sm-5">
+                                        <p>Average Rating: {{ comment.score }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- /panel panel-default -->
+                </div><!-- /col-sm-8 -->
+            </div><!-- /row -->
+
+            {% endfor %}
+
+        </div><!-- /container -->
+{% endblock %}

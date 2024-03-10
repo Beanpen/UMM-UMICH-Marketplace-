@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block styles %}
+{% endblock %}
+{% block content %}
+    <div class="container product">
+        <div class="left-column">
+            <img src="{{ detail.pic_link }}" alt="">
+        </div>
+        <div class="right-column">
+            <!-- Product Description -->
+            <div class="product-description">
+              <span>{{ detail.category }}</span><span style="float: right">{{ detail.date }}</span>
+              <h1>{{ detail.name }}</h1>
+              <p>{{ detail.description }}</p>
+            </div>
+
+            <p><strong>Seller:</strong> <a href="{{ detail.user_url }}">{{ detail.seller }}</a></p> <!-- author detail link not yet defined -->
+
+            {% if detail.quantity > 0 %}
+                <p><strong>Quantity:</strong> {{ detail.quantity }}</p>
+
+                {% if denied %}
+
+                    <p><strong>This is your own product</strong></p>
+
+                {% else %}
+                    <!-- Product Pricing -->
+                    <div class="product-price">
+                      <span>{{ detail.price }}$</span>
+                    </div>
+                    <a href="{{ detail.order_url }}" role="button" class="cart-btn">Buy!!!</a>
+
+                {% endif %}
+
+            {% else %}
+                <button class="cart-btn" type="button" disabled style="background-color: gray">SOLD OUT!</button>
+            {% endif %}
+        </div>
+
+    </div>
+
+{% endblock %}

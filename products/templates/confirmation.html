@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% if success %}
+
+    {% url 'home' as home %}
+
+    <p>Go back to <a href="{% url 'home' %}">homepage</a></p>
+
+    {% else %}
+
+    <h1>Confirmation</h1>
+    <h2>{{ detail.name }}</h2>
+    <p><img src="{{ detail.pic_link }}" /></p>
+    <p><strong>Item left:</strong> {{ detail.quantity_left }}</p>
+    <p><strong>Item Acquired:</strong> {{ detail.quantity_acquired }}</p>
+    <p><strong>Buyer:</strong> <a href="{{ detail.buyer_url }}">{{ detail.buyer }}</a></p> <!-- author detail link not yet defined -->
+    <p><strong>Message from buyer:</strong> {{ detail.tradeinfo }}</p>
+    <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Confirm!</button>
+    </form>
+
+    {% endif %}
+{% endblock %}
