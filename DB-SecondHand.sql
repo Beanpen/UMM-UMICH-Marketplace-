@@ -46,7 +46,7 @@ Create Table Feedback (
 
 Create Table Rating (
     r_id Integer,
-    r_score Integer check (r_score = 0 or r_score = 1 or r_score = 2),
+    r_score Integer check (r_score = 0 or r_score = 1 or r_score = 2 or r_score = 3 or r_score = 4 or r_score = 5),
     r_date Date,
     RatingUser varchar(150) NOT NULL,
     FeedbackUser varchar(150),
