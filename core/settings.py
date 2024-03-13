@@ -27,7 +27,7 @@ SECRET_KEY = '+pdmfue=7%#kq!q_5si5lu)fub5k2u3p@=9@c2(udlkww#ktm#'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -81,7 +81,7 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'umm-database',
+        'NAME': 'platform',
         'USER': 'DBprojectUser',
         'PASSWORD': 'password',
         'HOST':'umm-database.chmu088ua4n2.us-east-1.rds.amazonaws.com',

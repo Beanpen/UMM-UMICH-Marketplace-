@@ -26,6 +26,7 @@ For detailed instructions on setting up and running UMM, please refer to the doc
 
 ## Environment Setup
 ### Tips:
+You can replace python with python3 if not found.
 For steps with (*), you need to download MySQL, and then run
 ```
 mysql -u root -p
@@ -74,7 +75,7 @@ pip install -r requirments.txt
 5. Django basic setup
 ```
 python manage.py makemigrations
-python manage.py makemigrations
+python manage.py migrate
 # create a superuser
 python manage.py createsuperuser
 ```
