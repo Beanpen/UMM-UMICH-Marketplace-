@@ -8,25 +8,25 @@ UMM (University of Michigan Marketplace) is an online platform designed for stud
 
 To run UMM locally or deploy it on a server, you'll need the following:
 
-- **Python**: UMM is built with Django, a Python web framework. Make sure you have Python installed on your system. You can download it from [python.org](https://www.python.org/).
+- **Python**: Python is a high-level, general-purpose programming language.
 
-- **Django**: Install Django using pip, the Python package manager. You can install Django by running `pip install Django`.
+- **Django**: Django is a free and open-source, Python-based web framework that runs on a web server.
 
-- **Database**: UMM uses a database to store user information, product listings, and transaction records. You can use SQLite for development purposes or choose a more robust database like PostgreSQL for production deployments.
+- **Database**: local uses [MySQL](https://dev.mysql.com/downloads/shell/), on cloud uses RDS (still MySQL)
 
-- **Dependencies**: UMM relies on various Python packages and libraries. Install the dependencies listed in the `requirements.txt` file using `pip install -r requirements.txt`.
+- **Other Dependencies**: pytz allows accurate and cross platform timezone calculations using Python 2.4 or higher. 
 
-- **Environment Variables**: Set up environment variables for sensitive information such as secret keys, database credentials, and API keys. You can use a `.env` file to manage your environment variables.
+- **Environment Variables**: Set up environment variables for sensitive information such as timezone information, RDS database setups in settings.py.
 
 - **Static and Media Files**: Configure Django to serve static files (CSS, JavaScript) and media files (images, documents) correctly. This may involve setting up static and media root directories in your Django settings.
 
-- **Deployment**: If you're deploying UMM on a server, ensure you have a suitable hosting environment (e.g., Heroku, AWS) and follow best practices for security, scalability, and performance.
+- **Deployment**: If you're deploying UMM on a server, ensure you have a suitable hosting environment (e.g., Heroku, AWS) and follow best practices for security, scalability, and performance. I used EC2 from AWS in this project.
 
-For detailed instructions on setting up and running UMM, please refer to the documentation or contact the repository owner.
+For detailed instructions on setting up and running UMM, please refer to the documentation or contact me.
 
 ## Environment Setup
 ### Tips:
-You can replace python with python3 if not found.
+You can replace python3 with python if not found.
 For steps with (*), you need to download MySQL, and then run
 ```
 mysql -u root -p
@@ -36,8 +36,12 @@ so that your terminal looks like
 mysql>
 ```
 Now, you can run codes in those steps.
+Similarly, I used RDS (mysql) as the cloud database and EC2 from AWS to deploy it so,
+```
+mysql -h YOUR_RDS_Database.rds.amazonaws.com -P 3306 -u YOUR_USER_NAME -p
+```
 ### Steps:
-0. Database setup (*)
+1. Database setup (*)
 ```
 CREATE DATABASE platform CHARACTER SET UTF8;
 
@@ -47,49 +51,52 @@ GRANT ALL PRIVILEGES ON platform.* TO DBprojectUser@localhost;
 
 FLUSH PRIVILEGES;
 ```
-1. virtualenv
+2.1 If you are not using virtual environment:
+```
+# Install required packages
+pip install -r requirements.txt
+
+# Django basic setup
+python3 manage.py makemigrations
+python3 manage.py migrate
+
+# Load DB schema (*)
+source [project dir]/DB-SecondHand.sql
+
+# Run server
+python3 manage.py runserver #add a port here if you would like to specify
+```
+2.2 If you are using virtual environment (recommended for most cases):
 ```
 pip install virtualenv
-```
-2. mysql
-```
-sudo apt-get install mysql-server
-sudo apt-get install libmysqlclient-dev
-```
-For MAC users, replace "sudo apt-get" with "brew".
 
-3. create the virtual environment
-```
-virtualenv $environment_name
-```
-For MAC/Unix users,
-```
+# For MAC/Unix users,
 python3 -m venv .venv
-```
-4. activate the virtual environment
-```
-source path/to/env/folder/bin/activate
-# install required packages
-pip install -r requirments.txt
-```
-5. Django basic setup
-```
-python manage.py makemigrations
-python manage.py migrate
-# create a superuser
-python manage.py createsuperuser
-```
-6. Load DB schema (*)
-```
+
+# Activate the virtual environment (change the path if different)
+source env/bin/activate
+
+# Install required packages
+pip install -r requirements.txt
+
+# Django basic setup
+python3 manage.py makemigrations
+python3 manage.py migrate
+
+# Create a superuser
+python3 manage.py createsuperuser
+
+# Load DB schema (*)
 source [project dir]/DB-SecondHand.sql
+
+# Run server
+python3 manage.py runserver #add a port here if you would like to specify
 ```
-7. Run server
-```
-python manage.py runserver
-```
+Read more about makemigrations and migrate [here](https://www.geeksforgeeks.org/django-basic-app-model-makemigrations-and-migrate/).
+
 ## Disclaimer
 
-This project is based on code originally created as part of a school project by [Huang Jiahui] and [Joji James Anaghan, Su Qiulin, Wu Lingyun, Zhang Jiaxuan], which was made available on GitHub [https://github.com/Gabriel-Huang/SUTD_SecondHandGoods_Platform]. After contacting the original creators, they have granted permission for the use and modification of their code for the development of this project.
+This project is based on code originally created as part of a school project by [Huang Jiahui] and [Joji James Anaghan, Su Qiulin, Wu Lingyun, Zhang Jiaxuan], which was made available on [GitHub] (https://github.com/Gabriel-Huang/SUTD_SecondHandGoods_Platform). After contacting the original creators, they have granted permission for the use and modification of their code for the development of this project.
 
 While efforts have been made to ensure that the code is used responsibly and ethically, it is important to note the following:
 
