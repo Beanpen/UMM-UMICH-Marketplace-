@@ -81,11 +81,11 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'platform',
+        'NAME': 'umm-database',
         'USER': 'DBprojectUser',
         'PASSWORD': 'password',
-        'HOST':'localhost',
-        'PORT':'',
+        'HOST':'umm-database.chmu088ua4n2.us-east-1.rds.amazonaws.com',
+        'PORT':'3306',
     }
 }
 # DATABASES = {
