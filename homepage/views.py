@@ -9,6 +9,11 @@ from django.contrib.auth.decorators import login_required
 from difflib import SequenceMatcher
 from collections import Counter
 
+# Debug for timezone difference.
+# from django.conf import settings
+# Print out the TIME_ZONE setting
+# print("Client Timezone:", settings.TIME_ZONE)
+
 
 # Create your views here.
 def home(request):
@@ -33,12 +38,12 @@ def home(request):
 
         productid = []
 
-        for k in range (0,len(TargetProduct)):
-        	for i in range (0, len(Test)):
-        		listofsimilarity[k].append((Test[i][0],similar(Test[i][1],TargetProduct[k])))
-        	b = sorted(range(len(listofsimilarity[k])), key=lambda n: listofsimilarity[k][n][1],reverse=True)[:2]
-        	for j in b:
-        		productid.append(listofsimilarity[k][j][0])
+        for k in range(0, len(TargetProduct)):
+            for i in range(0, len(Test)):
+                listofsimilarity[k].append((Test[i][0], similar(Test[i][1], TargetProduct[k])))
+            b = sorted(range(len(listofsimilarity[k])), key=lambda n: listofsimilarity[k][n][1], reverse=True)[:2]
+            for j in b:
+                productid.append(listofsimilarity[k][j][0])
 
         # print TargetProduct
         # print Test

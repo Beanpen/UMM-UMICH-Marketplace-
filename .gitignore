@@ -3,3 +3,4 @@
 __pycache__
 platform
 db.sqlite3
+media/*
