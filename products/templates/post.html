@@ -1,21 +1,20 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
     {% if success %}
-
-        {% url 'home' as home %}
-        <p><strong>Succeed !</strong></p>
+        <p><strong>Succeed!</strong></p>
         <p>Go back to <a href="{% url 'home' %}">homepage</a></p>
-
     {% else %}
-
-      <h2>Sell</h2>
-      <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn">Sell!</button>
-      </form>
-
-     {% endif %}
+        <h2>Sell</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <!-- TODO: finish changes here-->
+            <!-- {{ formset.management_form }}
+            {% for form in formset %}
+                {{ form.as_p }} -->
+            <!-- {% endfor %} -->
+            <button type="submit" class="btn btn-primary">Sell</button>
+        </form>
+    {% endif %}
 {% endblock %}

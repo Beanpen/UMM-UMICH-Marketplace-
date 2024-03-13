@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from .forms import postForm, OrderForm, confirmationForm, updateForm
+from .forms import postForm, OrderForm, confirmationForm, updateForm # TODO: add ImageFormSet here
 from django.shortcuts import render
 from django.db import connection
 from django.contrib.auth.decorators import login_required
@@ -82,6 +82,62 @@ def post(request):
     else:
         form = postForm()
     return render(request, template, {'form': form})
+
+# Saved progress on branch #8multi-image-upload. To finish this, I need to
+# 1) use formset 2) change database structure to store more than one image urls
+# 3) make relevant changes if database changes.
+# Note: formset is a good start point but the relevant changes, including
+# codes, database are too much for this small proj, so leave for the future maybe.
+# Summary: I'll prioritize other tasks to ensure basic functionality first.
+# @login_required
+# def post(request):
+#     user = request.user
+#     template = 'post.html'
+#     if request.method == 'POST':
+#         form = postForm(request.POST, request.FILES)
+#         formset = ImageFormSet(request.POST, request.FILES)
+
+#         if form.is_valid() and formset.is_valid():
+#             productname = form.cleaned_data.get('productname')
+#             description = form.cleaned_data.get('description')
+#             quantity = int(form.cleaned_data.get('quantity'))
+#             price = form.cleaned_data.get('price')
+#             category = form.cleaned_data.get('category')  # Note here should be changed in future
+#             now = datetime.now().replace(microsecond=0)
+
+#             # Save product
+#             with connection.cursor() as cursor:
+#                 cursor.execute('''SELECT p_id FROM Product ORDER BY p_id DESC LIMIT 1;''')
+#                 row = cursor.fetchall()
+
+#                 if row == ():
+#                     cursor.execute('''INSERT INTO Product (p_id, sellerid,
+#                     p_name, p_quantity, p_description, p_date, category, price) values
+#                     (%s, %s, %s, %s, %s, %s, %s, %s);''', (0, user,
+#                     productname, quantity, description, now, category, price))
+
+#                 else:
+#                     pid = int(row[0][0]) + 1
+#                     cursor.execute('''INSERT INTO Product (p_id, sellerid,
+#                     p_name, p_quantity, p_description, p_date, category, price) values
+#                     (%s, %s, %s, %s, %s, %s, %s, %s);''', (pid, user,
+#                     productname, quantity, description, now, category, price))
+
+#             # Save images
+#             for form in formset:
+#                 if form.cleaned_data.get('pic'):
+#                     myfile = form.cleaned_data.get('pic')
+#                     fs = FileSystemStorage()
+#                     filename = fs.save(myfile.name, myfile)
+#                     uploaded_file_url = fs.url(filename)
+#                     # TODO: save the image to the database or perform other operations as needed
+#             return render(request, 'post.html', {'success': 1})
+
+#     else:
+#         form = postForm()
+#         formset = ImageFormSet()
+
+#     return render(request, template, {'form': form, 'formset': formset})
 
 
 @login_required
