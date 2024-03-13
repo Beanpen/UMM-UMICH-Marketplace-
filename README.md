@@ -56,6 +56,7 @@ sudo apt-get install mysql-server
 sudo apt-get install libmysqlclient-dev
 ```
 For MAC users, replace "sudo apt-get" with "brew".
+
 3. create the virtual environment
 ```
 virtualenv $environment_name
@@ -85,17 +86,17 @@ source [project dir]/DB-SecondHand.sql
 ```
 python manage.py runserver
 ```
+## Disclaimer
 
-# Disclaimer
+This project is based on code originally created as part of a school project by [Huang Jiahui] and [Joji James Anaghan, Su Qiulin, Wu Lingyun, Zhang Jiaxuan], which was made available on GitHub [https://github.com/Gabriel-Huang/SUTD_SecondHandGoods_Platform]. After contacting the original creators, they have granted permission for the use and modification of their code for the development of this project.
 
-This project utilizes code from [Original GitHub Repository](https://github.com/Gabriel-Huang/SUTD_SecondHandGoods_Platform). While I've made changes and comments to update, maintain and take it further, it's important to clarify that:
+While efforts have been made to ensure that the code is used responsibly and ethically, it is important to note the following:
 
-1. **Ownership and Profitability**: As the owner of this repository and the modifications made to the original code, I assert my ownership and potential future profitability of this project if it goes commercial.
+- This project is provided as-is, without any warranty or guarantee of fitness for any particular purpose.
+- The original creators and contributors are not liable for any damages or liabilities arising from the use of this project.
+- Users of this project are responsible for ensuring compliance with all applicable laws, regulations, and ethical guidelines.
+- Any modifications or enhancements made to the original code are the sole responsibility of the current project maintainers.
 
-2. **Security and Credentials**: While efforts have been made to ensure the security and integrity of the code, users should implement their own security measures.
+By using this project, you agree to abide by the terms and conditions outlined in this disclaimer. Additionally, it is acknowledged that I retain ownership rights over any modifications or enhancements made to the original code, including the right to commercialize the project in the future.
 
-3. **Copyrights and Fees**: I have reviewed the original code and found no indications of copyrighted material or associated fees. However, users should verify this independently.
-
-4. **Commercial Use**: Any future commercial use of this project, including associated liabilities and profits, will be solely attributed to me, the repository owner.
-
-If you have any concerns about the use of this code, please contact me at cassiez@umich.edu.
+If you have any questions or concerns regarding the use of this project, please contact [cassiez@umich.edu].
