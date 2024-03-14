@@ -239,10 +239,10 @@ textarea:focus{
   margin-top: 20px;
   margin-bottom: 20px;
   border: 0;
-  position: relative; /* or absolute */
+  position: static;
   left: 30%;
-
 }
+
 .search-bar1{
   margin-top: 20px;
   margin-bottom: 20px;
@@ -261,9 +261,15 @@ textarea:focus{
 .search-box{
     padding:20px;
     margin: 0;
-    width:500px;
+    width: 80%;
     height: 50px;
     font-size: 20px;
+}
+
+.welcome-heading {
+  text-align: center; /* Center align the heading */
+  font-size: 2.5em;
+  margin-top: 1%;margin-left: calc(50% - 250px); /* Adjust the left margin based on the width of the heading */
 }
 
 #search-icon {
@@ -327,6 +333,12 @@ textarea:focus{
     background-repeat: repeat-x;
     border-color: #245580;
 }
+
 .navbar-inverse .navbar-brand {
     color: #1ae26d;
+}
+
+.logo {
+  max-width: 100%; /* Make the image responsive */
+  height: auto; /* Maintain aspect ratio */
 }

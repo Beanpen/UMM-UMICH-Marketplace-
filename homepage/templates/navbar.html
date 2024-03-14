@@ -1,5 +1,29 @@
 {% load static %}
 
+<style>
+  .navbar {
+      height: 60px; /* Adjust the height of the navbar */
+      padding-top: 0;
+      padding-bottom: 0;
+  }
+  
+  .navbar-brand,
+  .navbar-nav > li > a {
+      font-size: 16px;
+      padding-top: 5px;
+      padding-bottom: 5px;
+      line-height: 20px;
+  }
+  .navbar-toggle {
+    margin-top: -3px; /* Adjust the margin-top value to move the toggle button up */
+  }
+  @media screen and (max-width: 767px) {
+    .navbar-collapse {
+      background-color: #303030; /* Adjust the background color as needed */
+    }
+  }
+</style>
+
 <!-- Fixed navbar -->
 <nav class="navbar navbar-inverse navbar-fixed-top">
   <div class="container">

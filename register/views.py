@@ -10,6 +10,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import redirect
 from django.core.files.storage import FileSystemStorage
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from datetime import *
 
 # Create your views here.
@@ -28,15 +29,18 @@ def register(request):
     return render(request, 'register.html', {'form': form})
 
 def signin(request):
-
     if request.method == 'POST':
         form = signinForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password')
             user = authenticate(username=username, password=raw_password)
-            auth_login(request, user)
-            return redirect('home')
+            if user is not None:
+                auth_login(request, user)
+                return redirect('home')
+            else:
+                # Display an error message
+                messages.error(request, 'Invalid username or password.')
     else:
         form = signinForm()
     return render(request, 'signin.html', {'form': form})
