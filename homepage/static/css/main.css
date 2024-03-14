@@ -269,7 +269,15 @@ textarea:focus{
 .welcome-heading {
   text-align: center; /* Center align the heading */
   font-size: 2.5em;
-  margin-top: 1%;margin-left: calc(50% - 250px); /* Adjust the left margin based on the width of the heading */
+  margin-top: 1%;
+  margin-left: calc(50% - 250px); /* Adjust the left margin based on the width of the heading */
+}
+
+/* Media query for smaller screens */
+@media screen and (min-width: 768px) {
+  .welcome-heading {
+    margin-left: -15%; /* Adjust the left margin based on the width of the heading */
+  }
 }
 
 #search-icon {
