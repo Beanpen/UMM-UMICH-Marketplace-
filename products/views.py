@@ -51,7 +51,7 @@ def post(request):
     if request.method == 'POST':
         form = postForm(request.POST, request.FILES)
         if form.is_valid():
-            productname = form.cleaned_data.get('productname')
+            productname = form.cleaned_data.get('product_name')
             discription = form.cleaned_data.get('description')
             quantity = int(form.cleaned_data.get('quantity'))
             price = form.cleaned_data.get('price')
