@@ -4,3 +4,5 @@ __pycache__
 platform
 db.sqlite3
 media/*
+.DS_Store
+staticfiles/.DS_Store
