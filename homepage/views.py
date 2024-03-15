@@ -8,102 +8,153 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from difflib import SequenceMatcher
 from collections import Counter
+from django.http import JsonResponse
 
 # Debug for timezone difference.
 # from django.conf import settings
 # Print out the TIME_ZONE setting
 # print("Client Timezone:", settings.TIME_ZONE)
 
-
-# Create your views here.
 def home(request):
     user = request.user
-    if user:
-        recommend1 = {}
-        recommend = []
-        TargetProduct = []  # user products
-        Test = []   # all products
+    user_products = []
+    all_products = []
+    if user.is_authenticated:
+        # Fetch user's search history
         with connection.cursor() as cursor:
-            cursor.execute('''SELECT content FROM Search_Record where user = "%s"''' %user)
-            user_products = dictfetchall(cursor)
-            cursor.execute("SELECT p_id, p_name FROM Product where p_quantity > 0")
-            all_product = dictfetchall(cursor)
+            cursor.execute('''SELECT content FROM Search_Record where user = %s''', [user])
+            user_products = [row['content'] for row in dictfetchall(cursor)]
 
-        for i in user_products:
-            TargetProduct.append(i['content'])
-        for i in all_product:
-            Test.append((i['p_id'],i['p_name']))
+    # Fetch all products
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT p_id, p_name FROM Product WHERE p_quantity > 0")
+        all_products = [(row['p_id'], row['p_name']) for row in dictfetchall(cursor)]
 
-        listofsimilarity = [[] for x in range(len(TargetProduct))]
+    # Recommend products based on user's search history
+    combined_recommend, recommend1, recommend1_url = recommend_products(user_products, all_products)
 
-        productid = []
+    # Fetch popular sellers
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT username FROM auth_user")
+        popular_seller = [row for row in dictfetchall(cursor)]
 
-        for k in range(0, len(TargetProduct)):
-            for i in range(0, len(Test)):
-                listofsimilarity[k].append((Test[i][0], similar(Test[i][1], TargetProduct[k])))
-            b = sorted(range(len(listofsimilarity[k])), key=lambda n: listofsimilarity[k][n][1], reverse=True)[:2]
-            for j in b:
-                productid.append(listofsimilarity[k][j][0])
+    # Fetch all categories
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT DISTINCT category FROM Product")
+        all_categories = [row[0] for row in cursor.fetchall()]
 
-        # print TargetProduct
-        # print Test
-        recommend_urls = []
-        recommend1_url = ''
-        pid = first_n(productid, 4)
-        # print(f'pid: {pid}')
-        if len(pid) < 4:
-            with connection.cursor() as cursor:
+    # Fetch products for current page with pagination
+    offset = int(request.GET.get('offset', 0))
+    products = fetch_products(offset)
+
+    context = {
+        "popular_seller": popular_seller,
+        "products": products,
+        'combined_recommend': combined_recommend,
+        'recommend1': recommend1,
+        'recommend1_url': recommend1_url,
+        "all_categories": all_categories,
+        "num_total_products": len(all_products),
+        "num_displayed_products": len(products),
+    }
+    return render(request, 'home.html', context)
+
+
+def get_total_products(request):
+    # Fetch total number of products
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT COUNT(*) FROM Product WHERE p_quantity > 0")
+        total_products = cursor.fetchone()[0]
+    
+    # Return total number of products as JSON response
+    return JsonResponse({'totalProducts': total_products})
+
+    
+
+def recommend_products(user_products, all_products):
+    list_of_similarity = [[] for _ in range(len(user_products))]
+    recommended_products = []
+    recommend_urls = []
+    product_ids = []
+    
+    # If the user has search history
+    if user_products:
+        # Compute similarities between user products and all available products
+        for k, target_product in enumerate(user_products):
+            for product_id, product_name in all_products:
+                similarity_score = similar(product_name, target_product)
+                list_of_similarity[k].append((product_id, similarity_score))
+        
+        # Select the top similar products
+        for similarities in list_of_similarity:
+            top_similarities = sorted(similarities, key=lambda x: x[1], reverse=True)[:2]
+            product_ids.extend([product_id for product_id, _ in top_similarities])
+        
+        # Fetch additional information for recommended products from the database
+        # print(f'product_ids: {product_ids}')
+        product_ids = first_n(product_ids, 4)
+        # print(f'product_ids: {product_ids}')
+
+        # First display the similar products
+        with connection.cursor() as cursor:
+            for product_id in product_ids:
                 cursor.execute('''SELECT p_id, p_name, product_pic_link, sellerid
-                FROM Product where p_quantity >0 order by p_id desc limit 4''')
-                recommend = dictfetchall(cursor)
-                print(f'recommend size: {len(recommend)}')
-                for i in range(1, len(recommend)):
-                    recommend_urls.append('/products/details/%s'%recommend[i]['p_id'])
-                recommend1 = recommend[0]
-                recommend1_url = '/products/details/%s'%recommend[0]['p_id']
-                recommend = recommend[1:]
+                                    FROM Product WHERE p_id = %s''', [product_id])
+                recommended_product = dictfetchall(cursor)
+                recommended_products.extend(recommended_product)
+                recommend_urls.append('/products/details/%s' % recommended_product[0]['p_id'])
 
-        else:
-            with connection.cursor() as cursor:
-                for i in pid:
-                    if i == 0:
-                        cursor.execute('''SELECT p_id, p_name, product_pic_link, sellerid
-                        FROM Product where p_id = %s;''' %i)
-                        record = dictfetchall(cursor)[0]
-                        recommend1 = record
-                        recommend1_url = '/products/details/%s'%record['p_id']
-                    else:
-                        cursor.execute('''SELECT p_id, p_name, product_pic_link, sellerid
-                        FROM Product where p_id = %s;''' %i)
-                        record = dictfetchall(cursor)[0]
-                        recommend.append(record)
-                        recommend_urls.append('/products/details/%s'%record['p_id'])
-    print(f'recommend1_url: {recommend1_url}')
-    print(f'recommend_urls: {recommend_urls}')
-    combined_recommend = zip(recommend, recommend_urls)
-    # print(f'combined_recommend: {combined_recommend}')
+    # If not enough (<4), then display the most recent products
+    existing_count = len(recommended_products)
+    missing_count = 4 - existing_count
+    if existing_count < 4:
+        with connection.cursor() as cursor:
+            cursor.execute('''SELECT p_id, p_name, product_pic_link, sellerid
+                                FROM Product WHERE p_quantity > 0 ORDER BY p_id DESC LIMIT %s''', missing_count)
+            recommended_products.extend(dictfetchall(cursor))
+            # print(f'existing_count: {existing_count}')
+            for i in range(existing_count, 4):
+                recommend_urls.append('/products/details/%s' % recommended_products[i]['p_id'])
+
+    # Recommend1 is the first product in the list, and reccomend_* includes the rest three
+    # I did this because the html template is designed to display the first product separately
+    recommend_urls = ['/products/details/%s' % product['p_id'] for product in recommended_products]
+    recommend1 = recommended_products[0] if recommended_products else {}
+    recommend1_url = '/products/details/%s' % recommend1.get('p_id', '') if recommend1 else ''
+    recommended_products = recommended_products[1:]
+    recommend_urls = recommend_urls[1:]
+    
+    combined_recommend = list(zip(recommended_products, recommend_urls))
+    return combined_recommend, recommend1, recommend1_url
+
+
+def fetch_products(offset):
+    # print(f'offset: {offset}')
+    with connection.cursor() as cursor:
+        cursor.execute('''SELECT p_id, p_name, product_pic_link, sellerid
+                          FROM Product WHERE p_quantity > 0 ORDER BY p_id DESC LIMIT 5 OFFSET %s''', [offset])
+        products = dictfetchall(cursor)
+
+    for product in products:
+        product['url'] = '/products/details/%s' % product['p_id']
+
+    return products
+
+
+def fetch_products_with_pagination(request):
+    offset = request.GET.get('offset', 0)  # Get the offset parameter from the request
+    offset = int(offset)  # Convert offset to an integer if necessary
+
     products = []
     with connection.cursor() as cursor:
         cursor.execute('''SELECT p_id, p_name, product_pic_link, sellerid
-        FROM Product where p_quantity >0 order by p_id desc limit 5''')
+                          FROM Product WHERE p_quantity > 0 ORDER BY p_id DESC LIMIT 5 OFFSET %s''', [offset])
         products = dictfetchall(cursor)
-    for i in range(len(products)):
-        url = '/products/details/%s'%products[i]['p_id']
-        products[i]['url'] = url
 
-    template = 'home.html'
-    with connection.cursor() as cursor:
-        cursor.execute("SELECT username FROM auth_user")
-        popular_seller = dictfetchall(cursor)
-    for user in popular_seller:
-        user['get_absolute_url'] = reverse('user-view', args=[str(user['username'])])
+    for product in products:
+        product['url'] = '/products/details/%s' % product['p_id']
 
-    with connection.cursor() as cursor:
-        cursor.execute("SELECT DISTINCT category FROM Product")
-        all_categories = [category[0] for category in cursor.fetchall()]
-    context = {"popular_seller": popular_seller, "products": products, 'recommend1': recommend1,
-               "all_categories": all_categories, 'combined_recommend': combined_recommend, 'recommend1_url': recommend1_url}
-    return render(request, template, context)
+    return JsonResponse(products, safe=False)
 
 
 def search(request):
@@ -245,13 +296,16 @@ def stats(request):
 
 
 def first_n(productid, num):
-    count = Counter(productid).most_common(num)
-    pid = []
-    if len(count)>=num:
-
-        for i in range(num):
-            pid.append(count[i][0])
-    return pid
+    # Count the occurrences of each product ID
+    counts = Counter(productid)
+    
+    # Select the most common product IDs
+    most_common = counts.most_common(num)
+    
+    # Extract the product IDs from the most_common list
+    selected_product_ids = [pid for pid, _ in most_common]
+    
+    return selected_product_ids
 
 def dictfetchall(cursor):
     "Return all rows from a cursor as a dict"
