@@ -10,3 +10,4 @@ if 'ec2' in hostname:
     # Apply settings for production
     # SECURE_SSL_REDIRECT = True
     CSRF_COOKIE_SECURE = True
+    CSRF_TRUSTED_ORIGINS = ['https://ummapp.net', 'https://www.ummapp.net']
