@@ -47,13 +47,21 @@ def home(request):
 
         # print TargetProduct
         # print Test
-
+        recommend_urls = []
+        recommend1_url = ''
         pid = first_n(productid, 4)
+        # print(f'pid: {pid}')
         if len(pid) < 4:
             with connection.cursor() as cursor:
                 cursor.execute('''SELECT p_id, p_name, product_pic_link, sellerid
                 FROM Product where p_quantity >0 order by p_id desc limit 4''')
                 recommend = dictfetchall(cursor)
+                print(f'recommend size: {len(recommend)}')
+                for i in range(1, len(recommend)):
+                    recommend_urls.append('/products/details/%s'%recommend[i]['p_id'])
+                recommend1 = recommend[0]
+                recommend1_url = '/products/details/%s'%recommend[0]['p_id']
+                recommend = recommend[1:]
 
         else:
             with connection.cursor() as cursor:
@@ -63,12 +71,17 @@ def home(request):
                         FROM Product where p_id = %s;''' %i)
                         record = dictfetchall(cursor)[0]
                         recommend1 = record
+                        recommend1_url = '/products/details/%s'%record['p_id']
                     else:
                         cursor.execute('''SELECT p_id, p_name, product_pic_link, sellerid
                         FROM Product where p_id = %s;''' %i)
                         record = dictfetchall(cursor)[0]
                         recommend.append(record)
-
+                        recommend_urls.append('/products/details/%s'%record['p_id'])
+    print(f'recommend1_url: {recommend1_url}')
+    print(f'recommend_urls: {recommend_urls}')
+    combined_recommend = zip(recommend, recommend_urls)
+    # print(f'combined_recommend: {combined_recommend}')
     products = []
     with connection.cursor() as cursor:
         cursor.execute('''SELECT p_id, p_name, product_pic_link, sellerid
@@ -88,8 +101,8 @@ def home(request):
     with connection.cursor() as cursor:
         cursor.execute("SELECT DISTINCT category FROM Product")
         all_categories = [category[0] for category in cursor.fetchall()]
-    context = {"popular_seller": popular_seller, "products": products, 'recommend1': recommend1, 'recommend': recommend,
-               "all_categories": all_categories}
+    context = {"popular_seller": popular_seller, "products": products, 'recommend1': recommend1,
+               "all_categories": all_categories, 'combined_recommend': combined_recommend, 'recommend1_url': recommend1_url}
     return render(request, template, context)
 
 
