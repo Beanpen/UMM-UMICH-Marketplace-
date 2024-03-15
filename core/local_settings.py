@@ -74,30 +74,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'core.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/1.11/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'platform',
-        'USER': 'DBprojectUser',
-        'PASSWORD': 'password',
-        'HOST':'umm-database.chmu088ua4n2.us-east-1.rds.amazonaws.com',
-        'PORT':'3306',
-    }
-}
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'platform',
-#         'USER': 'jiahui',
-#         'PASSWORD': 'We',
-#         'HOST': '127.0.0.1',
-#         'PORT': '',
-#     }
-# }
-
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
 
