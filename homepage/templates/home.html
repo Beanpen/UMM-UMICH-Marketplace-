@@ -21,6 +21,20 @@
     font-weight: normal; /* Remove bold styling */
     color: brown;
 }
+.product-details {
+    /* Adjust spacing between product details */
+}
+
+.product-name {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 5px; /* Reduce the margin between lines */
+}
+
+.product-price,
+.product-seller {
+    margin-bottom: 1px; /* Reduce the margin between lines */
+}
 </style>
 {% endblock %}
 
@@ -126,15 +140,19 @@
     <div id="product-list">
         {% for product in products %}
             <div class="col-sm-4">
-                <div class="thumbnail">
-                    <img class="product-list-pic" src="{{ product.product_pic_link }}" alt="IMAGE NOT FOUND" style="height: 200px;max-width: 100%">
-                    <p><strong>{{ product.p_name }}</strong></p>
-                    <p>Seller: {{ product.sellerid }}</p>
-                    <a href="{{ product.url }}" class="btn" role="button">Buy Now</a>
-                </div>
-            </div>
+                <a href="{{ product.url }}" class="product-link">
+                    <div class="thumbnail">
+                        <img class="product-list-pic" src="{{ product.product_pic_link }}" alt="IMAGE NOT FOUND" style="height: 200px;max-width: 100%">
+                        <div class="product-details">
+                            <p class="product-name">{{ product.p_name }}</p>
+                            <p class="product-price">${{ product.price }}</p>
+                            <p class="product-seller">Seller: {{ product.sellerid }}</p>
+                        </div>
+                    </div>
+                </a>
+            </div>        
         {% endfor %}
-    </div>
+    </div>    
 </div>
 
 <!-- Load More Section -->
@@ -164,12 +182,16 @@
                         var product = response[i];
                         var productHtml = `
                             <div class="col-sm-4">
-                                <div class="thumbnail">
-                                    <img class="product-list-pic" src="${product.product_pic_link}" alt="IMAGE NOT FOUND" style="height: 200px;max-width: 100%">
-                                    <p><strong>${product.p_name}</strong></p>
-                                    <p>Seller: ${product.sellerid}</p>
-                                    <a href="${product.url}" class="btn" role="button">Buy Now</a>
-                                </div>
+                                <a href="${product.url}" class="product-link">
+                                    <div class="thumbnail">
+                                        <img class="product-list-pic" src="${product.product_pic_link}" alt="IMAGE NOT FOUND" style="height: 200px;max-width: 100%">
+                                        <div class="product-details">
+                                            <p class="product-name"><strong>${product.p_name}</strong></p>
+                                            <p class="product-price">${'$'+product.price}</p>
+                                            <p class="product-seller">Seller: ${product.sellerid}</p>
+                                        </div>
+                                    </div>
+                                </a>
                             </div>
                         `;
                         $('#product-list').append(productHtml);

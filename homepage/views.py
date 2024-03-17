@@ -133,7 +133,7 @@ def recommend_products(user_products, all_products):
 def fetch_products(offset):
     # print(f'offset: {offset}')
     with connection.cursor() as cursor:
-        cursor.execute('''SELECT p_id, p_name, product_pic_link, sellerid
+        cursor.execute('''SELECT p_id, p_name, product_pic_link, sellerid, price
                           FROM Product WHERE p_quantity > 0 ORDER BY p_id DESC LIMIT 5 OFFSET %s''', [offset])
         products = dictfetchall(cursor)
 
@@ -149,7 +149,7 @@ def fetch_products_with_pagination(request):
 
     products = []
     with connection.cursor() as cursor:
-        cursor.execute('''SELECT p_id, p_name, product_pic_link, sellerid
+        cursor.execute('''SELECT p_id, p_name, product_pic_link, sellerid, price
                           FROM Product WHERE p_quantity > 0 ORDER BY p_id DESC LIMIT 5 OFFSET %s''', [offset])
         products = dictfetchall(cursor)
 
