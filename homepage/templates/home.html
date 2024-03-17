@@ -15,10 +15,17 @@
   font-weight: bold; /* Make the counts bold */
   /* color: #007bff; */
 }
+.feedback {
+    margin-top: 0%;
+    font-size: 18px; /* Adjust the font size as needed */
+    font-weight: normal; /* Remove bold styling */
+    color: brown;
+}
 </style>
 {% endblock %}
 
 {% block content %}
+<h1 class="feedback">Please feel free to leave your feedback <a href="https://forms.gle/sXt4y5HZJjLEKkv87" target="_blank">here.</a></h1>
 <h1 class="welcome-heading">Welcome</h1>
 <form class="search-bar" method="get" action="search/">
     {% csrf_token %}
