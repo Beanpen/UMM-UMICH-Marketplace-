@@ -36,7 +36,9 @@ def home(request):
     # Fetch popular sellers
     with connection.cursor() as cursor:
         cursor.execute("SELECT username FROM auth_user")
-        popular_seller = [row for row in dictfetchall(cursor)]
+        popular_seller = dictfetchall(cursor)
+    for user in popular_seller:
+        user['get_absolute_url'] = reverse('user-view', args=[str(user['username'])])
 
     # Fetch all categories
     with connection.cursor() as cursor:
