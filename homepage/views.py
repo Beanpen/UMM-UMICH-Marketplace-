@@ -284,6 +284,7 @@ def stats(request):
 
         pop_seller = dictfetchall(cursor)
     for i in range(len(pop_product)):
+        print(f'pop_product[i]: {pop_product[i]}')
         url = '/products/details/%s'%pop_product[i]['p_id']
         pop_product[i]['url'] = url
 
