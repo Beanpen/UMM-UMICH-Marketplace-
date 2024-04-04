@@ -60,7 +60,10 @@ pip install -r requirements.txt
 python3 manage.py makemigrations
 python3 manage.py migrate
 
-# Load DB schema (*)
+# Create a superuser
+python3 manage.py createsuperuser
+
+# Load DB schema (* run in mysql)
 source [project dir]/DB-SecondHand.sql
 
 # Run server
