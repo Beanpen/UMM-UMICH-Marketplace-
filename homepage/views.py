@@ -117,7 +117,7 @@ def recommend_products(user_products, all_products):
             for i in range(existing_count, 4):
                 if (len(recommended_products) < i+1):
                     break
-                print('recommended_products: ', recommended_products)
+                # print('recommended_products: ', recommended_products)
                 recommend_urls.append('/products/details/%s' % recommended_products[i]['p_id'])
 
     # Recommend1 is the first product in the list, and reccomend_* includes the rest three
