@@ -1,0 +1,16 @@
+/* Custom CSS */
+.sell-form {
+    margin-bottom: 20px; /* Add margin between form sections */
+}
+
+/* Style for upload button */
+.btn-upload {
+    background-color: #007bff; /* Blue background */
+    color: #fff; /* White text */
+}
+
+/* Style for sell button */
+.btn-sell {
+    background-color: #28a745; /* Green background */
+    color: #fff; /* White text */
+}

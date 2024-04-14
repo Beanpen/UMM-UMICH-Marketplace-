@@ -20,15 +20,16 @@ ACCEPT_DECLINE_CHOICES = (
 )
 
 
-
+class uploadImgForm(forms.Form):
+    Upload_your_item_picture = forms.FileField(required = True)
 
 class postForm(forms.Form):
     product_name = forms.CharField(max_length=100)
     price = forms.FloatField()
     quantity = forms.IntegerField()
     category = forms.ChoiceField(choices=CATEGORY_CHOICES)
-    description = forms.CharField(max_length=200, widget=forms.Textarea)
-    pic = forms.FileField(required = True)
+    description = forms.CharField(max_length=500, widget=forms.Textarea)
+    # pic = forms.FileField(required = True)
 
 class OrderForm(forms.Form):
     message = forms.CharField(max_length=250, widget=forms.Textarea)

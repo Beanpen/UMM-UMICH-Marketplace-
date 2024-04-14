@@ -174,7 +174,7 @@ textarea:focus{
 /* footer */
 #footer {
   padding: 60px 0 40px;
-    background-color: #0f0f0f;
+  background-color: #ffffff;
 }
 
 #footer p {
@@ -221,8 +221,8 @@ textarea:focus{
 /* Black buttons with extra padding and without rounded borders */
 .btn {
     padding: 10px 20px;
-    background-color: #333;
-    color: #f1f1f1;
+    background-color: #00274C;
+    color: #FFCB05;
     border-radius: 0;
     transition: .2s;
 }
@@ -241,6 +241,7 @@ textarea:focus{
   border: 0;
   position: static;
   left: 30%;
+  justify-content: center;
 }
 
 .search-bar1{
@@ -251,19 +252,19 @@ textarea:focus{
 }
 
 .rounded {
-  border: solid;
-  border-color: #3c6472;
+  border: 2px solid #00274C;
   border-radius:20px 0 0 20px;
   -moz-border-radius:20px 0 0 20px;
   -webkit-border-radius:20px 0 0 20px;
 }
 
 .search-box{
-    padding:20px;
-    margin: 0;
-    width: 80%;
-    height: 50px;
-    font-size: 20px;
+  padding:20px;
+  margin: 0;
+  width: 80%;
+  height: 50px;
+  font-size: 20px;
+  border: 2px solid #00274C;
 }
 
 .welcome-heading {
@@ -339,7 +340,7 @@ textarea:focus{
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff337ab7', endColorstr='#ff265a88', GradientType=0);
     filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
     background-repeat: repeat-x;
-    border-color: #245580;
+    border-color: #00274C;
 }
 
 .navbar-inverse .navbar-brand {

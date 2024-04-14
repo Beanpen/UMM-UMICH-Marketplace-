@@ -3,8 +3,7 @@
 {% block styles %}
 <style>
 .jumbotron{
-    text-align: center;
-    background-color: #0f0f0f;
+    background-color: #00274C;
 }
 
 
@@ -12,17 +11,20 @@
 {% endblock %}
 
 {% block jumbotron %}
-    <div class="jumbotron">
-      <h2 style="color: white">Hi {{user.username}}</h2>
-          <img src="{{ profile_pic.profile_pic }}" style="max-height: 250px; max-width: 500px; min-height: 150px">
-          <div>
-             <a href="{{ profile_pic.upload_url }}" class="btn" role="button"><strong>upload/update profile photo</strong></a>
-          </div>
+    <div>
+        <div>
+            <h1 style = "color: #00274C;border-bottom: 2px solid #FFCB05;display: inline-block; margin-bottom: 2%;">Profile</h1>
+        </div>
+        <img src="{{ profile_pic.profile_pic }}" style="max-width: 100px; min-height: 50px">
+        <span style="color:#00274C;font-size:150%">{{user.username}}</span>
     </div>
+    <a style="flex-basis: 39.5%;color:#FFCB05;font-size:12px;" href="{{ profile_pic.upload_url }}" class="btn" role="button"><strong>upload/update profile photo</strong></a>
+
+    
         <div class="container">
             <div class="row">
                 <div class="col-sm-12">
-                    <h3>Purchase Record</h3>
+                    <h3 style="color:#00274C;">Purchase Record</h3>
                     <hr>
                     <ul class=list-group>
                         {% for record in order_record %}
@@ -65,7 +67,7 @@
 
             <div class="row">
                 <div class="col-sm-12">
-                    <h3>Received Orders</h3>
+                    <h3 style="color:#00274C;">Received Orders</h3>
                     <hr>
                     {% for record in sell_record %}
                         <ul class=list-group>
@@ -128,7 +130,7 @@
 
             <div class="row">
                 <div class="col-sm-12">
-                    <h3>All Selling Products</h3>
+                    <h3 style="color:#00274C;">All Selling Products</h3>
                     <hr>
                     <ul class=list-group>
                         {% for record in product_list %}
@@ -155,7 +157,7 @@
 
             <div class="row">
                 <div class="col-sm-12">
-                    <h3>Comments</h3>
+                    <h3 style="color:#00274C;">Comments</h3>
                     <hr>
                 </div><!-- /col-sm-12 -->
             </div><!-- /row -->

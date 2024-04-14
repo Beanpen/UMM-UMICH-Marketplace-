@@ -1,12 +1,22 @@
 {% load static %}
+
+{% block styles %}
+<style>
+    .big_img {
+        max-width: 100%;
+        max-height: 100vh;
+        height: auto;
+    }
+</style>
+{% endblock %}    
 <div>
     <footer>
         <div id="footer" class="text-center">
             <div class="container">
                 <div class="row align-items-center">
                     <div class="col-md-12">
+                        <img class = "big_img" src="{% static "images/big_logo.jpg" %}" class="logo" alt="UM Logo">
                         <p>Copyright UMM 50.008 Database. All Rights Reserved.</p>
-                        <img src="{% static "images/um-logo.png" %}" class="logo" alt="UM Logo">
                     </div>
                 </div>
             </div>

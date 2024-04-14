@@ -134,14 +134,14 @@ def profile(request):
                        "ORDER BY score DESC) AS F ",
                        [user])
         comment_list = dictfetchall(cursor)
-        print (comment_list)
+        # print (comment_list)
         cursor.execute("SELECT FeedbackUser, f_content, f_date, f_id, p_name, p_id "
                        "FROM Feedback, Product "
                        "WHERE Seller = %s "
                        "AND Feedback.Product = Product.p_id",
                        [user])
         comment_list2 = dictfetchall(cursor)
-        print (comment_list2)
+        # print (comment_list2)
         comment_ids = set()
         for comment in comment_list:
             comment_ids.add(comment['f_id'])

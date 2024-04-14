@@ -168,6 +168,9 @@ def search(request):
     category = request.GET.get('category')
     startdate = request.GET.get('startdate')
     enddate = request.GET.get('enddate')
+    price_max = request.GET.get('price_max')
+    price_min = request.GET.get('price_min')
+    
     query_sentence = "SELECT * FROM Product WHERE (p_name REGEXP %s OR p_description REGEXP %s) "
     query_list = [content, content]
     if sellername != "":
@@ -286,7 +289,7 @@ def stats(request):
 
         pop_seller = dictfetchall(cursor)
     for i in range(len(pop_product)):
-        print(f'pop_product[i]: {pop_product[i]}')
+        # print(f'pop_product[i]: {pop_product[i]}')
         url = '/products/details/%s'%pop_product[i]['p_id']
         pop_product[i]['url'] = url
 
@@ -322,3 +325,6 @@ def dictfetchall(cursor):
 
 def similar(a, b):
     return SequenceMatcher(None, a, b).ratio()
+
+def chat(request = None):
+    return render(request, "chat.html", {})

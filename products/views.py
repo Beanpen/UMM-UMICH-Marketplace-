@@ -1,13 +1,21 @@
 # -*- coding: utf-8 -*-
+
 from __future__ import unicode_literals
-from .forms import postForm, OrderForm, confirmationForm, updateForm
+from .forms import uploadImgForm, postForm, OrderForm, confirmationForm, updateForm
 from django.shortcuts import render
 from django.db import connection
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.core.files.storage import FileSystemStorage
 from datetime import datetime
+from django.conf import settings
 
+
+import os
+import json
+from pathlib import Path
+import google.generativeai as genai
+import PIL.Image
 
 def details(request, pk):
 
@@ -43,24 +51,51 @@ def details(request, pk):
     return render(request, template, context)
 
 
+
 @login_required
 def post(request):
     user = request.user
     template = 'post.html'
     success = {'success': 1}
+
     if request.method == 'POST':
-        form = postForm(request.POST, request.FILES)
-        if form.is_valid():
-            productname = form.cleaned_data.get('product_name')
-            discription = form.cleaned_data.get('description')
-            quantity = int(form.cleaned_data.get('quantity'))
-            price = form.cleaned_data.get('price')
-            category = form.cleaned_data.get('category') #note here should be changed in future
+        upload_form = uploadImgForm(request.POST, request.FILES)
+        if upload_form.is_valid():
             myfile = request.FILES['pic']
+            # print("myfile", myfile)
             fs = FileSystemStorage()
             filename = fs.save(myfile.name, myfile)
-            uploaded_file_url = fs.url(filename)
+            file_path_within_storage = fs.url(filename)
+            
+            local_absolute_path = str(settings.MEDIA_ROOT + "/" +myfile.name)
+            # print( "MEDIA_ROOT", settings.MEDIA_ROOT)
+            # print("local_absolute_path", local_absolute_path)
+            # gemini API to get other product info in a json format
+            nextFormJson = apicallFuc(local_absolute_path)
+            # print(nextFormJson)
+
+            context = {
+                'product_name': nextFormJson.get('product_name'),
+                'description': nextFormJson.get('short_description'),
+                'quantity': int(nextFormJson.get('quantity')),
+                'price': nextFormJson.get('price_suggestion'),
+                'category': nextFormJson.get('category'),
+            }
+
+            post_form = postForm(context)
+            return render(request, template, {'upload_form': upload_form, 'post_form': post_form, 'file_path_within_storage': file_path_within_storage})
+
+        post_form = postForm(request.POST)
+        if post_form.is_valid():
+            productname = post_form.cleaned_data.get('product_name')
+            discription = post_form.cleaned_data.get('description')
+            quantity = int(post_form.cleaned_data.get('quantity'))
+            price = post_form.cleaned_data.get('price')
+            category = post_form.cleaned_data.get('category') #note here should be changed in future
+            file_path_within_storage = request.POST.get('file_path_within_storage', '')
+
             now = datetime.now().replace(microsecond=0)
+            # print("file_path_within_storage", file_path_within_storage)
             with connection.cursor() as cursor:
                 cursor.execute('''SELECT p_id FROM Product ORDER BY p_id DESC LIMIT 1;''')
                 row = cursor.fetchall()
@@ -69,19 +104,22 @@ def post(request):
                     cursor.execute('''INSERT INTO Product (p_id, sellerid,
                     p_name, p_quantity, p_description, p_date, product_pic_link, category, price) values
                     (%s, %s, %s, %s, %s, %s, %s, %s, %s);''', (0, user,
-                    productname, quantity, discription, now, uploaded_file_url, category, price))
+                    productname, quantity, discription, now, file_path_within_storage, category, price))
 
                 else:
                     pid = int(row[0][0]) + 1
                     cursor.execute('''INSERT INTO Product (p_id, sellerid,
                     p_name, p_quantity, p_description, p_date, product_pic_link, category, price) values
                     (%s, %s, %s, %s, %s, %s, %s, %s, %s);''', (pid, user,
-                    productname, quantity, discription, now, uploaded_file_url, category, price))
+                    productname, quantity, discription, now, file_path_within_storage, category, price))
             return render(request, 'post.html', success)
-
+        
     else:
-        form = postForm()
-    return render(request, template, {'form': form})
+        upload_form = uploadImgForm()
+        post_form = postForm()
+
+    return render(request, template, {'upload_form': upload_form, 'post_form': post_form})
+
 
 
 @login_required
@@ -264,3 +302,22 @@ def dictfetchall(cursor):
         dict(zip(columns, row))
         for row in cursor.fetchall()
     ]
+
+
+
+# from google.colab import userdata
+genai.configure(api_key=settings.GOOGLE_API_KEY)
+
+
+def apicallFuc(imgUrl):
+    prompt = """You are a super exprienced second hand market agent, and you received the image your client. Please provide your client with the product name, quantity, price suggestion (just a number), category (electronic_device, health_beauty, fashion, sports, groceries, food, book, stationary, others) and short description for the product. Output in json format (don't show the word json)"""
+    model = genai.GenerativeModel('gemini-pro-vision')
+    image = PIL.Image.open(imgUrl)
+    response = model.generate_content([prompt, image])
+    # print(response.text)
+    result = json.loads(response.text)
+    return result
+
+
+
+

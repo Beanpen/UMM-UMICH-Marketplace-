@@ -3,47 +3,95 @@
 
 {% block styles %}
 <style>
-.jumbotron{
-    text-align: center;
-}
-.product-count {
-  font-size: 16px; /* Adjust font size as needed */
-  margin-bottom: 5px; /* Add some spacing between paragraphs */
-}
-#displayed-count,
-#total-count {
-  font-weight: bold; /* Make the counts bold */
-  /* color: #007bff; */
-}
-.feedback {
-    margin-top: 0%;
-    font-size: 18px; /* Adjust the font size as needed */
-    font-weight: normal; /* Remove bold styling */
-    color: brown;
-}
-.product-details {
-    /* Adjust spacing between product details */
-}
+    /* TODO: this is a duplication of AAAA */
+    .jumbotron{
+        text-align: center;
+    }
+    .product-count {
+    font-size: 16px; /* Adjust font size as needed */
+    margin-bottom: 5px; /* Add some spacing between paragraphs */
+    }
+    #displayed-count,
+    #total-count {
+    font-weight: bold; /* Make the counts bold */
+    /* color: #007bff; */
+    }
+    .feedback {
+        margin-top: 0%;
+        font-size: 18px; /* Adjust the font size as needed */
+        font-weight: normal; /* Remove bold styling */
+        color: brown;
+    }
 
-.product-name {
-    font-weight: bold;
-    font-size: 16px;
-    margin-bottom: 5px; /* Reduce the margin between lines */
-}
+    .product-details {
+        display: flex; /* Make it a flex container */
+        flex-direction: row-reverse;
+    }
 
-.product-price,
-.product-seller {
-    margin-bottom: 1px; /* Reduce the margin between lines */
-}
+    .product-name {
+        font-weight: bold; /* Make the product name bold */
+        /* font-size: 16px; Adjust the font size as needed */
+        margin: 10%;
+        /* text-align: center; */
+    }
+
+    .product-price, .product-seller {
+        /* margin-top: auto; Push to the bottom of the container */
+        /* margin-top: -80%; */
+        font-weight: bold;
+        font-size: 16px;
+        /* margin: 10%; */
+    }
+
+    .thumbnail {
+        /* border: 1px solid #FFCB05; */
+        /* padding: 0px; */
+        width: 250px; /* Adjust width to match image width */
+        height: 250px; /* Adjust height to match image height */
+        text-align: left;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4); /* Adjust the color and opacity of the shadow */
+    }
+
+    .banner {
+        background-color: #FFCB05;
+        color: #00274C;
+        text-align: center;
+        padding: 2rem;
+        font-size: 2rem;
+    }
+    .big_img {
+        max-width: 100%;
+        max-height: 100vh;
+        height: auto;
+        width: auto;
+    }
+
+    .rounded {
+        border: 2px solid #00274C;
+        border-radius:20px 0 0 20px;
+        -moz-border-radius:20px 0 0 20px;
+        -webkit-border-radius:20px 0 0 20px;
+    }
+
+    .search-box{
+        padding:20px;
+        margin: 0;
+        width: 80%;
+        height: 50px;
+        font-size: 20px;
+        border: 2px solid #00274C;
+    }
 </style>
 {% endblock %}
 
 {% block content %}
-<h1 class="feedback">This is a test website. Please feel free to leave your feedback <a href="https://forms.gle/sXt4y5HZJjLEKkv87" target="_blank">here.</a></h1>
-<h1 class="welcome-heading">Welcome</h1>
+
+<img class="big_img" src="{% static "images/welcome.jpg" %}" alt = "welcome">
+
+<center>
 <form class="search-bar" method="get" action="search/">
     {% csrf_token %}
-    <input type="search" class="search-box rounded" placeholder="Search Anything You Want..." name="content" required><button type="submit" id="search-icon"><img src="{% static "images/search.png" %}" style="width: 40px;height: 40px"></button>
+    <input type="search" class="search-box rounded" placeholder="       Search Posts..." name="content" required><button type="submit" id="search-icon"><img src="{% static "images/search.png" %}" style="width: 40px;height: 40px"></button>
     <div>
         <a class="accordion" role="button"><h4>Search With Criteria</h4></a>
         <div class="panel" id="panelcollapse">
@@ -59,6 +107,11 @@
             <input type="date" name="startdate">
             <label>End Date: </label>
             <input type="date" name="enddate">
+            <p>   </p>
+            <label>Minimum Price:</label>
+            <input type="number" name="price_min" min="0">
+            <label>Maximum Price:</label>
+            <input type="number" name="price_max" min="0">
             <p>   </p>
         </div>
     </div>
@@ -79,8 +132,9 @@
     }
     </script>
 </form>
+</center>
 
-<div class="row">
+{% comment %} <div class="row">
     <div class="col-md-9">
         <div id="carousel-main" class="carousel slide " data-ride="carousel" data-interval="3000">
             <ol class="carousel-indicators">
@@ -93,13 +147,13 @@
             <div class="carousel-inner">
                 <div class="active item peopleCarouselImg">
                     <a href="{{ recommend1_url }}">
-                        <img src="{{ recommend1.product_pic_link }}" class="img-responsive" style="width: 100%;height: 500px;max-height: 500px;">
+                        <img src="{{ recommend1.product_pic_link }}" class="img-responsive" style="max-width: 100%;max-height: 100vh;height: auto;">
                     </a>
                 </div>
                 {% for prod, url in combined_recommend %}
                 <div class="item peopleCarouselImg">
                     <a href="{{ url }}">
-                        <img src="{{ prod.product_pic_link }}" class="img-responsive" style="width: 100%;height: 500px;max-height: 500px;">
+                        <img src="{{ prod.product_pic_link }}" class="img-responsive" style="max-width: 100%;max-height: 100vh;height: auto;">
                     </a>
                 </div>
                 {% endfor %}
@@ -132,21 +186,22 @@
             <h4>No Data Returned</h4>
         {% endif %}
     </div>
-</div>
+</div> {% endcomment %}
 
 <div class="row">
-    <h1>Product List</h1>
-    <hr>
+    {% comment %} <h1 style = "color: #00274C">Product List</h1> {% endcomment %}
+    {% comment %} <hr> {% endcomment %}
     <div id="product-list">
         {% for product in products %}
             <div class="col-sm-4">
                 <a href="{{ product.url }}" class="product-link">
+                    <!-- TODO: this is a duplication of AAAA -->
                     <div class="thumbnail">
-                        <img class="product-list-pic" src="{{ product.product_pic_link }}" alt="IMAGE NOT FOUND" style="height: 200px;max-width: 100%">
-                        <div class="product-details">
-                            <p class="product-name">{{ product.p_name }}</p>
-                            <p class="product-price">${{ product.price }}</p>
-                            <p class="product-seller">Seller: {{ product.sellerid }}</p>
+                        <img class="product-list-pic" src="{{ product.product_pic_link }}" alt="IMAGE NOT FOUND" style="width: 250px; height: 200px; object-fit: cover;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <p style="flex-basis: 59.5%;color:#00274C;font-size:16px;font-style:bold;"><b>{{ product.p_name }}</b></p>
+                            <p style="flex-basis: 39.5%;color:#00274C;font-size:15px;text-align:right">${{ product.price }}</p>
+                            <!-- <p class="product-seller">{{ product.sellerid }}</p> -->
                         </div>
                     </div>
                 </a>
@@ -167,6 +222,7 @@
     </div>
 </div>
 
+
 <script>
     $(document).ready(function() {
         // Function to load more products
@@ -180,15 +236,15 @@
                     // Append the new products to the product-list div
                     for (var i = 0; i < response.length; i++) {
                         var product = response[i];
+                        // TODO: this is a duplication of AAAA
                         var productHtml = `
                             <div class="col-sm-4">
                                 <a href="${product.url}" class="product-link">
                                     <div class="thumbnail">
                                         <img class="product-list-pic" src="${product.product_pic_link}" alt="IMAGE NOT FOUND" style="height: 200px;max-width: 100%">
-                                        <div class="product-details">
-                                            <p class="product-name"><strong>${product.p_name}</strong></p>
-                                            <p class="product-price">${'$'+product.price}</p>
-                                            <p class="product-seller">Seller: ${product.sellerid}</p>
+                                        <div style="display: flex; justify-content: space-between;">
+                                            <p style="flex-basis: 59.5%;color:#00274C;font-size:16px;font-style:bold;"><b>${product.p_name}</b></p>
+                                            <p style="flex-basis: 39.5%;color:#00274C;font-size:15px;text-align:right">${'$'+product.price}</p>
                                         </div>
                                     </div>
                                 </a>

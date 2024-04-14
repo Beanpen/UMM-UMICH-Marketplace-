@@ -174,7 +174,7 @@ textarea:focus{
 /* footer */
 #footer {
   padding: 60px 0 40px;
-    background-color: #0f0f0f;
+  background-color: #ffffff;
 }
 
 #footer p {
@@ -208,13 +208,14 @@ textarea:focus{
 /* Remove border and add padding to thumbnails */
 .thumbnail {
     padding: 0 0 15px 0;
-    border: none;
+    border: 1px solid#FFCB05;
     border-radius: 0;
 }
 
 .thumbnail p {
     margin-top: 15px;
     color: #555;
+    border: 1px solid#FFCB05;
 }
 
 /* button */

@@ -5,6 +5,8 @@
       height: 60px; /* Adjust the height of the navbar */
       padding-top: 0;
       padding-bottom: 0;
+      background-color:  #00274C; 
+      color: #FFCB05; /* U-M Maize */
   }
   
   .navbar-brand,
@@ -13,19 +15,38 @@
       padding-top: 5px;
       padding-bottom: 5px;
       line-height: 20px;
+      color: #FFCB05; /* U-M Maize */
   }
   .navbar-toggle {
     margin-top: -3px; /* Adjust the margin-top value to move the toggle button up */
+    color: #FFCB05 !important; /* U-M Maize */
+  }
+  .navbar-toggle .icon-bar {
+    background-color: #FFCB05; /* U-M Maize */
   }
   @media screen and (max-width: 767px) {
     .navbar-collapse {
-      background-color: #303030; /* Adjust the background color as needed */
+      background-color: #00274C; /* Adjust the background color as needed */
+      color: #FFCB05; /* U-M Maize */
     }
+  }
+  #chatWithAI {
+    background: none; /* Remove any background */
+    border: none; /* Remove the border */
+    padding: 0; /* Remove padding if not needed */
+    outline: none; /* Remove the focus outline */
+    cursor: pointer; /* Change cursor to the pointer hand icon */
+  }
+  
+  #chatWithAI img {
+    height: 50px; /* Your existing height */
+    width: auto; /* Maintain aspect ratio */
+    display: block; /* Remove any inline defaults */
   }
 </style>
 
 <!-- Fixed navbar -->
-<nav class="navbar navbar-inverse navbar-fixed-top">
+<nav class="navbar navbar-fixed-top">
   <div class="container">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -34,7 +55,8 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href={% url 'home' %}>UM Marketplace</a>
+      {% comment %} <a class="navbar-brand" href={% url 'home' %}>UM Marketplace</a> {% endcomment %}
+      <a href={% url 'home' %}><img src="{% static "images/big_M.jpg" %}" alt="M" style="width:40px;height:30px; margin-left: 5%;margin-right: 20%;"></a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -52,5 +74,12 @@
       </ul>
 
     </div><!--/.nav-collapse -->
+    
+</div>
+<div style="text-align: right;">
+  <a href="/homepage/chat"><img src="{% static "images/chat.png" %}" style="height: 100px;"></a>
   </div>
+
+  
 </nav>
+
