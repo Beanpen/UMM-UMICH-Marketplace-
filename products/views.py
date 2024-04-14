@@ -61,7 +61,7 @@ def post(request):
     if request.method == 'POST':
         upload_form = uploadImgForm(request.POST, request.FILES)
         if upload_form.is_valid():
-            myfile = request.FILES['pic']
+            myfile = request.FILES['Upload_your_item_picture']
             # print("myfile", myfile)
             fs = FileSystemStorage()
             filename = fs.save(myfile.name, myfile)
