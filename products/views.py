@@ -9,7 +9,7 @@ from django.shortcuts import redirect
 from django.core.files.storage import FileSystemStorage
 from datetime import datetime
 from django.conf import settings
-
+from json.decoder import JSONDecodeError
 
 import os
 import json
@@ -71,16 +71,26 @@ def post(request):
             # print( "MEDIA_ROOT", settings.MEDIA_ROOT)
             # print("local_absolute_path", local_absolute_path)
             # gemini API to get other product info in a json format
-            nextFormJson = apicallFuc(local_absolute_path)
-            # print(nextFormJson)
+            try:
+                nextFormJson = apicallFuc(local_absolute_path)
+                # print(nextFormJson)
 
-            context = {
-                'product_name': nextFormJson.get('product_name'),
-                'description': nextFormJson.get('short_description'),
-                'quantity': int(nextFormJson.get('quantity')),
-                'price': nextFormJson.get('price_suggestion'),
-                'category': nextFormJson.get('category'),
-            }
+                context = {
+                    'product_name': nextFormJson.get('product_name'),
+                    'description': nextFormJson.get('short_description'),
+                    'quantity': int(nextFormJson.get('quantity')),
+                    'price': nextFormJson.get('price_suggestion'),
+                    'category': nextFormJson.get('category'),
+                }
+            except JSONDecodeError:
+                # If JSON decoding fails, return a default value
+                context = {
+                    "product_name": "",
+                    "description": "",
+                    "quantity": 0,
+                    "price": 0,  # Assuming default price is 0
+                    "category": "other",
+                }
 
             post_form = postForm(context)
             return render(request, template, {'upload_form': upload_form, 'post_form': post_form, 'file_path_within_storage': file_path_within_storage})
@@ -308,16 +318,59 @@ def dictfetchall(cursor):
 # from google.colab import userdata
 genai.configure(api_key=settings.GOOGLE_API_KEY)
 
+# TODO: support for HEIC images in the future
+def convert_heic_to_jpg(heic_file_path):
+    """
+    Convert HEIC image to PNG format and save it under settings.MEDIA_ROOT.
+    """
+    try:
+        print("heic_file_path[-4:]", heic_file_path[-4:])
+        heic_file_path = heic_file_path[:-4] + "heic"
+        print("HEIC image before", heic_file_path)
+        heic_image = PIL.Image.open(heic_file_path)
+        print("HEIC image after", heic_file_path)
+        heic_image.convert("RGB").save(settings.MEDIA_ROOT, "JPEG")
+        print("HEIC image converted to PNG format successfully: ", heic_file_path)
+    except Exception as e:
+        print("Error converting HEIC image to PNG format: ", e)
+
+# def apicallFuc(imgUrl):
+#     prompt = """You are a super experienced second-hand market agent, and you received the image from your client. Please provide your client with the product name, quantity, price suggestion (just a number), category (electronic_device, health_beauty, fashion, sports, groceries, food, book, stationary, others), and short description for the product. Output in JSON format (don't show the word JSON)."""
+#     model = genai.GenerativeModel('gemini-pro-vision')
+
+#     # Convert HEIC image to PNG format
+#     if imgUrl.lower().endswith('.heic'):
+#         imgUrl = convert_heic_to_jpg(imgUrl)
+    
+#     image = PIL.Image.open(imgUrl)
+#     response = model.generate_content([prompt, image])
+    
+#     # Find the index of the first opening curly brace '{' and the last closing curly brace '}'
+#     start_index = response.text.find('{')
+#     end_index = response.text.rfind('}')
+    
+#     # Extract the JSON content from response.text
+#     json_content = response.text[start_index:end_index+1]
+    
+#     # print(json_content)
+#     result = json.loads(json_content)
+#     # print("GOOOOOOOOD")
+#     return result
 
 def apicallFuc(imgUrl):
-    prompt = """You are a super exprienced second hand market agent, and you received the image your client. Please provide your client with the product name, quantity, price suggestion (just a number), category (electronic_device, health_beauty, fashion, sports, groceries, food, book, stationary, others) and short description for the product. Output in json format (don't show the word json)"""
+    prompt = """You are a super experienced second-hand market agent, and you received the image from your client. Please provide your client with the product name, quantity, price suggestion (just a number), category (electronic_device, health_beauty, fashion, sports, groceries, food, book, stationary, others), and short description for the product. Output in JSON format (don't show the word JSON)."""
     model = genai.GenerativeModel('gemini-pro-vision')
     image = PIL.Image.open(imgUrl)
     response = model.generate_content([prompt, image])
-    # print(response.text)
-    result = json.loads(response.text)
+    
+    # Find the index of the first opening curly brace '{' and the last closing curly brace '}'
+    start_index = response.text.find('{')
+    end_index = response.text.rfind('}')
+    
+    # Extract the JSON content from response.text
+    json_content = response.text[start_index:end_index+1]
+    
+    # print(json_content)
+    result = json.loads(json_content)
+    # print("GOOOOOOOOD")
     return result
-
-
-
-
